@@ -1,6 +1,6 @@
 ---
-apiVersion: "stable.k8s.psg.io/v1"
-kind: "Certificate"
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
 metadata:
   labels:
     app: {{ template "__CHART__.fullname" . }}
@@ -9,8 +9,14 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "__CHART__.fullname" . }}
 spec:
-  domain: {{ .Values.certificate.domain | quote }}
-  email: {{ .Values.certificate.email | quote }}
-  provider: {{ .Values.certificate.provider | quote }}
-  secretName: "tls-{{ template "__CHART__.fullname" . }}"
-
+  commonName: __COMMON_NAME__
+  dnsNames:
+    - __DNS_SAN__
+  issuerRef:
+    # The "kind" can be either:
+    #
+    # A "cluster issuer", which handles cert management across that cluster or
+    # An "issuer" which handles cert management only in that namespace
+    kind: ClusterIssuer
+    name: __ISSUER_NAME__
+  secretName: __SECRET_FOR_TLS__
